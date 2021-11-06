@@ -1,5 +1,6 @@
 let noteTitle;
 let noteText;
+let noteIdCounter = 1;
 let saveNoteBtn;
 let newNoteBtn;
 let noteList;
@@ -25,30 +26,35 @@ const hide = elem => {
 // activeNote is used to keep track of the note in the textarea
 let activeNote = {};
 
-const getNotes = () =>
-  fetch('/api/notes', {
+function getNotes() {
+  return fetch('/api/notes', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
     }
   });
+}
 
-const saveNote = note =>
-  fetch('/api/notes', {
+function saveNote(note) {
+  delete note.id
+
+  return fetch('/api/notes', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify(note)
   });
+}
 
-const deleteNote = id =>
-  fetch(`/api/notes/${id}`, {
+function deleteNote(id) {
+  return fetch(`/api/notes/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
     }
   });
+}
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
@@ -118,6 +124,7 @@ const handleRenderSaveBtn = () => {
 
 // Render the list of note titles
 const renderNoteList = async notes => {
+  noteIdCounter = 1;
   let jsonNotes = await notes.json();
   if (window.location.pathname === '/notes') {
     noteList.forEach(el => (el.innerHTML = ''));
@@ -159,6 +166,9 @@ const renderNoteList = async notes => {
   }
 
   jsonNotes.forEach(note => {
+    //add in logic for id
+    note.id = noteIdCounter;
+    noteIdCounter++;
     const li = createLi(note.title);
     li.dataset.note = JSON.stringify(note);
 
