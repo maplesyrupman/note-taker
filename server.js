@@ -43,6 +43,10 @@ app.delete('/api/notes/:id', (req, res) => {
     res.status(200).json({ message: 'success' })
 })
 
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/index.html'))
+})
+
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}`)
